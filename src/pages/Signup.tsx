@@ -1,20 +1,44 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Heart, Mail, Lock, User, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+
+type AppRole = "patient" | "doctor" | "admin";
 
 export default function SignupPage() {
-  const [role, setRole] = useState("patient");
+  const [role, setRole] = useState<AppRole>("patient");
   const [showPassword, setShowPassword] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const roleLabels = { patient: "Patient", doctor: "Doctor", admin: "Admin" } as const;
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    window.location.href = `/${role}/dashboard`;
+    setIsLoading(true);
+    const { error } = await signUp(email, password, fullName, role);
+    setIsLoading(false);
+
+    if (error) {
+      toast({ title: "Signup failed", description: error.message, variant: "destructive" });
+      return;
+    }
+
+    toast({
+      title: "Account created!",
+      description: "Please check your email to verify your account before signing in.",
+    });
+    navigate("/login");
   };
 
   return (
@@ -50,7 +74,7 @@ export default function SignupPage() {
           </div>
 
           <div className="flex gap-2 p-1 bg-muted rounded-xl">
-            {(Object.keys(roleLabels) as Array<keyof typeof roleLabels>).map((r) => (
+            {(Object.keys(roleLabels) as AppRole[]).map((r) => (
               <button
                 key={r}
                 onClick={() => setRole(r)}
@@ -70,14 +94,29 @@ export default function SignupPage() {
               <Label htmlFor="name">Full Name</Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input id="name" placeholder="Dr. Jane Smith" className="pl-10" required />
+                <Input
+                  id="name"
+                  placeholder="Dr. Jane Smith"
+                  className="pl-10"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input id="email" type="email" placeholder="you@example.com" className="pl-10" required />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  className="pl-10"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
               </div>
             </div>
             <div className="space-y-2">
@@ -89,6 +128,8 @@ export default function SignupPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className="pl-10 pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
                 <button
@@ -100,8 +141,8 @@ export default function SignupPage() {
                 </button>
               </div>
             </div>
-            <Button variant="hero" size="lg" className="w-full" type="submit">
-              Create Account <ArrowRight className="ml-1 h-4 w-4" />
+            <Button variant="hero" size="lg" className="w-full" type="submit" disabled={isLoading}>
+              {isLoading ? "Creating account..." : "Create Account"} {!isLoading && <ArrowRight className="ml-1 h-4 w-4" />}
             </Button>
           </form>
 

@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Heart, LogOut, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NavItem {
   title: string;
@@ -21,6 +22,14 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children, navItems, role, userName }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut, profile } = useAuth();
+  const displayName = profile?.full_name || userName;
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -82,10 +91,8 @@ export default function DashboardLayout({ children, navItems, role, userName }: 
               <p className="text-xs text-muted-foreground capitalize">{role}</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" asChild>
-            <Link to="/login">
+          <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={handleSignOut}>
               <LogOut className="h-4 w-4 mr-2" /> Sign Out
-            </Link>
           </Button>
         </div>
       </aside>

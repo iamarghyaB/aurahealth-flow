@@ -1,26 +1,43 @@
-import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Heart, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
-  const [searchParams] = useSearchParams();
-  const defaultRole = searchParams.get("role") || "patient";
-  const [role, setRole] = useState(defaultRole);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { signIn, role } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const roleLabels = { patient: "Patient", doctor: "Doctor", admin: "Admin" } as const;
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Navigate to dashboard based on role
-    window.location.href = `/${role}/dashboard`;
+    setIsLoading(true);
+    const { error } = await signIn(email, password);
+    setIsLoading(false);
+
+    if (error) {
+      toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      return;
+    }
+
+    // Wait for auth context to load role, then redirect
+    toast({ title: "Welcome back!", description: "Redirecting to your dashboard..." });
   };
+
+  // Auto-redirect if already logged in with role
+  useEffect(() => {
+    if (role) {
+      navigate(`/${role}/dashboard`, { replace: true });
+    }
+  }, [role, navigate]);
 
   return (
     <div className="min-h-screen flex">
@@ -39,23 +56,6 @@ export default function LoginPage() {
             </Link>
             <h1 className="text-2xl font-extrabold">Welcome back</h1>
             <p className="text-muted-foreground mt-1">Sign in to your account</p>
-          </div>
-
-          {/* Role Selector */}
-          <div className="flex gap-2 p-1 bg-muted rounded-xl">
-            {(Object.keys(roleLabels) as Array<keyof typeof roleLabels>).map((r) => (
-              <button
-                key={r}
-                onClick={() => setRole(r)}
-                className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                  role === r
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {roleLabels[r]}
-              </button>
-            ))}
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
@@ -99,8 +99,8 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
-            <Button variant="hero" size="lg" className="w-full" type="submit">
-              Sign In <ArrowRight className="ml-1 h-4 w-4" />
+            <Button variant="hero" size="lg" className="w-full" type="submit" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"} {!isLoading && <ArrowRight className="ml-1 h-4 w-4" />}
             </Button>
           </form>
 
