@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -202,14 +203,14 @@ export default function FindDoctors() {
                 <CardContent className="p-5">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     {/* Avatar */}
-                    <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg shrink-0">
+                    <Link to={`/patient/doctors/${doctor.id}`} className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg shrink-0 hover:bg-primary/20 transition-colors">
                       {doctor.avatar}
-                    </div>
+                    </Link>
 
                     {/* Info */}
                     <div className="flex-1 min-w-0 space-y-1.5">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-bold text-base">{doctor.name}</h3>
+                        <Link to={`/patient/doctors/${doctor.id}`} className="font-bold text-base hover:text-primary transition-colors">{doctor.name}</Link>
                         {doctor.available && (
                           <Badge variant="default" className="bg-success text-success-foreground text-[10px] px-1.5 py-0">Available</Badge>
                         )}
