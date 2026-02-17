@@ -1,5 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import doctor1Img from "@/assets/doctors/doctor-1.jpg";
+import doctor2Img from "@/assets/doctors/doctor-2.jpg";
+import doctor3Img from "@/assets/doctors/doctor-3.jpg";
+import doctor4Img from "@/assets/doctors/doctor-4.jpg";
+import doctor5Img from "@/assets/doctors/doctor-5.jpg";
+import doctor6Img from "@/assets/doctors/doctor-6.jpg";
+
+const doctorImages: Record<number, string> = {
+  1: doctor1Img, 2: doctor2Img, 3: doctor3Img,
+  4: doctor4Img, 5: doctor5Img, 6: doctor6Img,
+};
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -203,8 +214,14 @@ export default function FindDoctors() {
                 <CardContent className="p-5">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     {/* Avatar */}
-                    <Link to={`/patient/doctors/${doctor.id}`} className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg shrink-0 hover:bg-primary/20 transition-colors">
-                      {doctor.avatar}
+                    <Link to={`/patient/doctors/${doctor.id}`} className="h-14 w-14 rounded-2xl shrink-0 overflow-hidden hover:opacity-90 transition-opacity">
+                      {doctorImages[doctor.id] ? (
+                        <img src={doctorImages[doctor.id]} alt={doctor.name} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+                          {doctor.avatar}
+                        </div>
+                      )}
                     </Link>
 
                     {/* Info */}
