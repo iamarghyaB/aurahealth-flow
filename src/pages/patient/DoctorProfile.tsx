@@ -1,5 +1,16 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import doctor1Img from "@/assets/doctors/doctor-1.jpg";
+import doctor2Img from "@/assets/doctors/doctor-2.jpg";
+import doctor3Img from "@/assets/doctors/doctor-3.jpg";
+import doctor4Img from "@/assets/doctors/doctor-4.jpg";
+import doctor5Img from "@/assets/doctors/doctor-5.jpg";
+import doctor6Img from "@/assets/doctors/doctor-6.jpg";
+
+const doctorImages: Record<string, string> = {
+  "1": doctor1Img, "2": doctor2Img, "3": doctor3Img,
+  "4": doctor4Img, "5": doctor5Img, "6": doctor6Img,
+};
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -97,9 +108,11 @@ export default function DoctorProfile() {
         <Card>
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-6">
-              <div className="h-24 w-24 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-extrabold text-3xl shrink-0">
-                {doctor.avatar}
-              </div>
+              <img
+                src={doctorImages[id || "1"]}
+                alt={doctor.name}
+                className="h-28 w-28 rounded-2xl object-cover shadow-md shrink-0"
+              />
               <div className="flex-1 space-y-3">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
