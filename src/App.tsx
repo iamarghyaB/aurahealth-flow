@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -28,24 +30,33 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/patient/dashboard" element={<PatientDashboard />} />
-          <Route path="/patient/doctors" element={<FindDoctors />} />
-          <Route path="/patient/appointments" element={<PatientAppointments />} />
-          <Route path="/patient/doctors/:id" element={<DoctorProfile />} />
-          <Route path="/patient/records" element={<HealthRecords />} />
-          <Route path="/patient/lab-reports" element={<LabReports />} />
-          <Route path="/patient/prescriptions" element={<Prescriptions />} />
-          <Route path="/patient/pharmacy" element={<Pharmacy />} />
-          <Route path="/patient/consultations" element={<Consultations />} />
-          <Route path="/patient/profile" element={<PatientProfile />} />
-          <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+
+            {/* Patient routes */}
+            <Route path="/patient/dashboard" element={<ProtectedRoute allowedRoles={["patient"]}><PatientDashboard /></ProtectedRoute>} />
+            <Route path="/patient/doctors" element={<ProtectedRoute allowedRoles={["patient"]}><FindDoctors /></ProtectedRoute>} />
+            <Route path="/patient/appointments" element={<ProtectedRoute allowedRoles={["patient"]}><PatientAppointments /></ProtectedRoute>} />
+            <Route path="/patient/doctors/:id" element={<ProtectedRoute allowedRoles={["patient"]}><DoctorProfile /></ProtectedRoute>} />
+            <Route path="/patient/records" element={<ProtectedRoute allowedRoles={["patient"]}><HealthRecords /></ProtectedRoute>} />
+            <Route path="/patient/lab-reports" element={<ProtectedRoute allowedRoles={["patient"]}><LabReports /></ProtectedRoute>} />
+            <Route path="/patient/prescriptions" element={<ProtectedRoute allowedRoles={["patient"]}><Prescriptions /></ProtectedRoute>} />
+            <Route path="/patient/pharmacy" element={<ProtectedRoute allowedRoles={["patient"]}><Pharmacy /></ProtectedRoute>} />
+            <Route path="/patient/consultations" element={<ProtectedRoute allowedRoles={["patient"]}><Consultations /></ProtectedRoute>} />
+            <Route path="/patient/profile" element={<ProtectedRoute allowedRoles={["patient"]}><PatientProfile /></ProtectedRoute>} />
+
+            {/* Doctor routes */}
+            <Route path="/doctor/dashboard" element={<ProtectedRoute allowedRoles={["doctor"]}><DoctorDashboard /></ProtectedRoute>} />
+
+            {/* Admin routes */}
+            <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>} />
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
