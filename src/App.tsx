@@ -11,6 +11,7 @@ import Signup from "./pages/Signup";
 import PatientDashboard from "./pages/patient/Dashboard";
 import DoctorDashboard from "./pages/doctor/Dashboard";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AccessControl from "./pages/admin/AccessControl";
 import FindDoctors from "./pages/patient/FindDoctors";
 import PatientAppointments from "./pages/patient/Appointments";
 import DoctorProfile from "./pages/patient/DoctorProfile";
@@ -53,6 +54,7 @@ const App = () => (
 
             {/* Admin routes */}
             <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/access-control" element={<ProtectedRoute allowedRoles={["admin"]}><AccessControl /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
