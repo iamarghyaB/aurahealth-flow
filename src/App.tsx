@@ -20,6 +20,11 @@ import DoctorProfile from "./pages/doctor/Profile";
 import DoctorSettings from "./pages/doctor/Settings";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AccessControl from "./pages/admin/AccessControl";
+import AdminDoctors from "./pages/admin/Doctors";
+import AdminPatients from "./pages/admin/Patients";
+import AdminAppointments from "./pages/admin/Appointments";
+import AdminMedicines from "./pages/admin/Medicines";
+import AdminOrders from "./pages/admin/Orders";
 import FindDoctors from "./pages/patient/FindDoctors";
 import PatientAppointments from "./pages/patient/Appointments";
 import PatientDoctorProfile from "./pages/patient/DoctorProfile";
@@ -70,6 +75,11 @@ const App = () => (
 
             {/* Admin routes */}
             <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/doctors" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDoctors /></ProtectedRoute>} />
+            <Route path="/admin/patients" element={<ProtectedRoute allowedRoles={["admin"]}><AdminPatients /></ProtectedRoute>} />
+            <Route path="/admin/appointments" element={<ProtectedRoute allowedRoles={["admin"]}><AdminAppointments /></ProtectedRoute>} />
+            <Route path="/admin/medicines" element={<ProtectedRoute allowedRoles={["admin"]}><AdminMedicines /></ProtectedRoute>} />
+            <Route path="/admin/orders" element={<ProtectedRoute allowedRoles={["admin"]}><AdminOrders /></ProtectedRoute>} />
             <Route path="/admin/access-control" element={<ProtectedRoute allowedRoles={["admin"]}><AccessControl /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFound />} />

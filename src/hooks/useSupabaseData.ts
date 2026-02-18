@@ -512,3 +512,39 @@ export function useAllOrders() {
     },
   });
 }
+
+// ============= UPDATE ORDER (admin) =============
+export function useUpdateOrder() {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
+      const { error } = await supabase.from("orders").update(updates).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["all-orders"] });
+      qc.invalidateQueries({ queryKey: ["orders"] });
+      toast({ title: "Order updated" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+}
+
+// ============= ALL PATIENTS (admin) =============
+export function useAllPatients() {
+  return useQuery({
+    queryKey: ["all-patients"],
+    queryFn: async () => {
+      const { data: roles, error } = await supabase.from("user_roles").select("user_id").eq("role", "patient");
+      if (error) throw error;
+      const userIds = roles.map((r) => r.user_id);
+      const profileMap = await getProfileMap(userIds);
+      return userIds.map((uid) => ({
+        id: uid,
+        full_name: profileMap.get(uid)?.full_name || "Unknown",
+        email: profileMap.get(uid)?.email || "",
+      }));
+    },
+  });
+}

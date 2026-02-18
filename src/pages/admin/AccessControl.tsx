@@ -5,53 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  LayoutDashboard,
-  Users,
-  Stethoscope,
-  Calendar,
-  DollarSign,
-  BarChart3,
-  FileText,
-  Settings,
-  Shield,
-  BedDouble,
-  ClipboardList,
-  Search,
-  UserCog,
-  ArrowLeft,
-} from "lucide-react";
+import { Users, Stethoscope, Shield, Search, UserCog, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { adminNavItems } from "@/constants/navigation";
 import { Link } from "react-router-dom";
-
-const navItems = [
-  { title: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { title: "Doctors", href: "/admin/doctors", icon: Stethoscope },
-  { title: "Patients", href: "/admin/patients", icon: Users },
-  { title: "Appointments", href: "/admin/appointments", icon: Calendar },
-  { title: "Revenue", href: "/admin/revenue", icon: DollarSign },
-  { title: "Analytics", href: "/admin/analytics", icon: BarChart3 },
-  { title: "Lab Reports", href: "/admin/lab-reports", icon: FileText },
-  { title: "Room Management", href: "/admin/rooms", icon: BedDouble },
-  { title: "Audit Logs", href: "/admin/audit-logs", icon: ClipboardList },
-  { title: "Access Control", href: "/admin/access-control", icon: Shield },
-  { title: "Settings", href: "/admin/settings", icon: Settings },
-];
 
 type AppRole = "patient" | "doctor" | "admin";
 
@@ -78,6 +42,7 @@ export default function AccessControl() {
   const [newRole, setNewRole] = useState<AppRole>("patient");
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
+  const { profile } = useAuth();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -131,7 +96,7 @@ export default function AccessControl() {
   };
 
   return (
-    <DashboardLayout navItems={navItems} role="Admin" userName="Admin User">
+    <DashboardLayout navItems={adminNavItems} role="Admin" userName={profile?.full_name || "Admin"}>
       <div className="space-y-6 animate-fade-in">
         <div className="flex items-center justify-between">
           <div>
