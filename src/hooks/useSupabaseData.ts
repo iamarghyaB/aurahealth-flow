@@ -149,14 +149,18 @@ export function usePrescriptions(filters?: { patientId?: string; doctorDbId?: st
       const { data, error } = await q.order("created_at", { ascending: false });
       if (error) throw error;
       const doctorIds = [...new Set(data.map((p) => p.doctor_id))];
+      const patientIds = [...new Set(data.map((p) => p.patient_id))];
       const doctorMap = await getDoctorMap(doctorIds);
       const profileMap = await getProfileMap([...doctorMap.values()].map((d) => d.user_id));
+      const patientProfileMap = await getProfileMap(patientIds);
       return data.map((p) => {
         const doc = doctorMap.get(p.doctor_id);
         return {
           ...p,
           doctor_name: doc ? profileMap.get(doc.user_id)?.full_name || "Unknown" : "Unknown",
           doctor_specialty: doc?.specialty || "",
+          patient_name: patientProfileMap.get(p.patient_id)?.full_name || "Unknown",
+          patient_email: patientProfileMap.get(p.patient_id)?.email || "",
           medications: p.prescription_medications || [],
         };
       });
@@ -212,13 +216,17 @@ export function useLabReports(filters?: { patientId?: string; doctorDbId?: strin
       const { data, error } = await q.order("created_at", { ascending: false });
       if (error) throw error;
       const doctorIds = [...new Set(data.filter((r) => r.doctor_id).map((r) => r.doctor_id!))];
+      const patientIds = [...new Set(data.map((r) => r.patient_id))];
       const doctorMap = await getDoctorMap(doctorIds);
       const profileMap = await getProfileMap([...doctorMap.values()].map((d) => d.user_id));
+      const patientProfileMap = await getProfileMap(patientIds);
       return data.map((r) => {
         const doc = r.doctor_id ? doctorMap.get(r.doctor_id) : null;
         return {
           ...r,
           ordered_by: doc ? profileMap.get(doc.user_id)?.full_name || "Unknown" : "Unknown",
+          patient_name: patientProfileMap.get(r.patient_id)?.full_name || "Unknown",
+          patient_email: patientProfileMap.get(r.patient_id)?.email || "",
           results: r.lab_report_results || [],
         };
       });
@@ -258,13 +266,17 @@ export function useHealthRecords(filters?: { patientId?: string; doctorDbId?: st
       const { data, error } = await q.order("created_at", { ascending: false });
       if (error) throw error;
       const doctorIds = [...new Set(data.filter((r) => r.doctor_id).map((r) => r.doctor_id!))];
+      const patientIds = [...new Set(data.map((r) => r.patient_id))];
       const doctorMap = await getDoctorMap(doctorIds);
       const profileMap = await getProfileMap([...doctorMap.values()].map((d) => d.user_id));
+      const patientProfileMap = await getProfileMap(patientIds);
       return data.map((r) => {
         const doc = r.doctor_id ? doctorMap.get(r.doctor_id) : null;
         return {
           ...r,
           doctor_name: doc ? profileMap.get(doc.user_id)?.full_name || "Unknown" : "Unknown",
+          patient_name: patientProfileMap.get(r.patient_id)?.full_name || "Unknown",
+          patient_email: patientProfileMap.get(r.patient_id)?.email || "",
         };
       });
     },
