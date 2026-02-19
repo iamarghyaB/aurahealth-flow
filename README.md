@@ -85,6 +85,58 @@ The app will be available at `http://localhost:5173`.
 
 ---
 
+## ⚙️ How MediFlow Works
+
+MediFlow follows a **role-based workflow** where each user type interacts with the platform differently:
+
+### 1. Sign Up & Role Selection
+- Visit `/signup` and create an account by choosing your role: **Patient**, **Doctor**, or **Admin**.
+- After email verification, log in at `/login`. You're automatically redirected to your role-specific dashboard.
+
+### 2. Patient Workflow
+```
+Sign Up → Find a Doctor → Book Appointment → Attend Consultation
+→ Receive Prescription → Order Medicines from Pharmacy
+→ View Lab Reports & Health Records
+```
+1. **Find & Book**: Search doctors by specialty, availability, or rating. View profiles and book In-Person or Video appointments with a preferred time slot.
+2. **Consultations**: Attend scheduled Video or Audio consultations. View history and ratings.
+3. **Prescriptions**: After a consultation, doctors issue prescriptions. Patients can view active medications, dosage, and refill status.
+4. **Pharmacy**: Browse the medicine catalog, add items to cart, and place orders. Track order status (Pending → Shipped → Delivered).
+5. **Lab Reports**: View results uploaded by doctors, with status indicators (Normal / Abnormal) and alerts for out-of-range values.
+6. **Health Records**: Access a complete medical history including diagnoses, treatments, and visit summaries.
+
+### 3. Doctor Workflow
+```
+Log In → View Today's Schedule → Manage Appointments
+→ Write Prescriptions → Upload Lab Reports → Manage Patient Records
+```
+1. **Dashboard**: See today's appointments, patient stats, and quick actions.
+2. **Appointments**: Accept, complete, or cancel patient appointments. Filter by status or date.
+3. **Patients**: View an aggregated list of all patients with their visit history.
+4. **Prescriptions**: Create new prescriptions with medications, dosage, frequency, and instructions.
+5. **Lab Reports & Health Records**: Upload and manage lab results and patient medical records.
+6. **Consultations**: Schedule and manage Video/Audio consultations.
+
+### 4. Admin Workflow
+```
+Log In → Monitor Clinic KPIs → Manage Doctors & Patients
+→ Oversee Appointments → Manage Medicine Inventory → Track Orders
+```
+1. **Dashboard**: Clinic-wide overview with KPIs — total doctors, patients, appointments, and revenue.
+2. **User Management**: Add, edit, or deactivate doctor and patient accounts.
+3. **Appointments**: View and manage all clinic appointments across doctors.
+4. **Medicines**: Maintain the medicine catalog — add new medicines, update stock, set pricing.
+5. **Orders**: Track all pharmacy orders and update their fulfillment status.
+6. **Access Control**: Manage role-based permissions for all users.
+
+### 5. Data Security
+- **Row Level Security (RLS)**: Every table enforces policies so users only see their own data.
+- **Role-based routing**: Protected routes prevent unauthorized access (e.g., patients can't access admin pages).
+- **Authentication**: All API calls require a valid session token.
+
+---
+
 ## 🔐 Authentication
 
 - **Sign Up** (`/signup`) – Create an account as Patient, Doctor, or Admin.
